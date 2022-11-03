@@ -8,9 +8,9 @@ import Taro, {
   shareFileMessage,
   showToast,
 } from "@tarojs/taro";
-import Layout from "../../components/layout";
 import "./backup.scss";
 import { addSecrets, getSecrets } from "../../storage";
+import Layout from "../../components/layout";
 
 interface FileStat {
   size: number;

@@ -39,11 +39,15 @@
   padding: 30px;
 }
 
-.progress-item {
+.flex {
   display: flex;
   justify-content: center;
 }
 
 .code-item {
   margin-left: auto;
+}
+
+.progress {
+  --progress-height: 8px;
 }

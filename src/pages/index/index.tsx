@@ -12,13 +12,14 @@ import { TOTP, URI } from "otpauth";
 import { Plus } from "@taroify/icons";
 import {
   ActionSheet,
-  Avatar,
-  Circle,
   Search,
   Flex,
   Dialog,
   Button,
   Navbar,
+  Image,
+  SwipeCell,
+  Progress,
 } from "@taroify/core";
 
 import { addSecret, deleteSecret, getSecrets } from "../../storage";
@@ -29,7 +30,6 @@ export default function Index() {
   const [value, setValue] = useState<string>("");
   const [actionSheetIsOpened, setActionSheetIsOpened] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [seconds, setSeconds] = useState(1);
   const [secrets, setSecrets] = useState<OTPAuth.TOTP[]>([]);
   const [tokens, setTokens] = useState<string[]>([]);
   const [deleteSecretIndex, setDeleteSecretIndex] = useState<number>(-1);
@@ -56,7 +56,6 @@ export default function Index() {
           setTokens(localSecrets.map((secret) => secret.generate()));
         }
         let p = ((INTERVAL - remainSeconds) / INTERVAL) * 100;
-        setSeconds(remainSeconds + 1);
         setProgress(p);
       }, 1000);
     })();
@@ -135,38 +134,39 @@ export default function Index() {
                 secrets.length > 0 && setDeleteSecretIndex(index)
               }
             >
-              <Flex align="center" justify="start" gutter={10}>
-                <Flex.Item>
-                  <Avatar
-                    shape="rounded"
-                    src="https://jdc.jd.com/img/200"
-                  ></Avatar>
-                </Flex.Item>
-                <Flex.Item>
-                  <Flex direction="column">
-                    <Text className="issuer">{item.issuer}</Text>
-                    <Text className="label">{item.label}</Text>
-                  </Flex>
-                </Flex.Item>
-                <Flex.Item className="code-item">
-                  <Text className="code">{tokens[index]}</Text>
-                </Flex.Item>
-                <Flex.Item className="progress-item">
-                  <Circle
-                    color={progress > 80 ? "#ee0a24" : "#1989fa"}
-                    layerColor="#F3F4F6"
-                    percent={progress}
-                    strokeWidth={20}
-                    size={30}
-                  >
-                    {seconds}
-                  </Circle>
-                </Flex.Item>
-              </Flex>
+              <SwipeCell>
+                <Flex align="center" justify="start" gutter={10}>
+                  <Flex.Item className="flex">
+                    <Image
+                      style={{ width: "2.5rem", height: "2.5rem" }}
+                      src={`http://127.0.0.1:8000/icon/${item.issuer}.svg`}
+                    />
+                  </Flex.Item>
+                  <Flex.Item>
+                    <Flex direction="column">
+                      <Text className="issuer">{item.issuer}</Text>
+                      <Text className="label">{item.label}</Text>
+                    </Flex>
+                  </Flex.Item>
+                  <Flex.Item className="code-item">
+                    <Text className="code">{tokens[index]}</Text>
+                    <Progress
+                      className="progress"
+                      percent={progress}
+                      label={false}
+                      color={progress > 80 ? "danger" : "primary"}
+                    />
+                  </Flex.Item>
+                </Flex>
+                <SwipeCell.Actions side="right" catchMove>
+                  <Button variant="contained" shape="square" color="danger">
+                    删除
+                  </Button>
+                </SwipeCell.Actions>
+              </SwipeCell>
             </Flex.Item>
           ))}
         </Flex>
-
         <View className="tips">Tips: 点击复制，长按删除~</View>
       </View>
       <ActionSheet
@@ -184,7 +184,7 @@ export default function Index() {
           onClick={async () => {
             setActionSheetIsOpened(false);
             await navigateTo({
-              url: "/pages/add/add",
+              url: "/modules/pages/add/add",
             });
           }}
           name="手动输入添加"

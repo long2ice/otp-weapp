@@ -5,8 +5,8 @@ import { TOTP, URI } from "otpauth";
 import { navigateBack, showToast } from "@tarojs/taro";
 
 import "./add.scss";
-import Layout from "../../components/layout";
-import { addSecret } from "../../storage";
+import { addSecret } from "../../../storage";
+import Layout from "../../../components/layout";
 
 export default function Add() {
   const [account, setAccount] = useState("");

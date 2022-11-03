@@ -1,9 +1,10 @@
 export default defineAppConfig({
-  pages: [
-    "pages/index/index",
-    "pages/add/add",
-    "pages/backup/backup",
-    "pages/user/user",
+  pages: ["pages/index/index", "pages/backup/backup", "pages/user/user"],
+  subPackages: [
+    {
+      root: "modules",
+      pages: ["pages/add/add"],
+    },
   ],
   window: {
     backgroundTextStyle: "light",
