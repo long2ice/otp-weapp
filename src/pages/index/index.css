@@ -1,0 +1,51 @@
+.item {
+  border-radius: 20px;
+  width: 100%;
+  background-color: white;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+.issuer {
+  font-size: larger;
+  color: #333;
+}
+
+.label {
+  color: gray;
+  font-size: small;
+}
+
+.code {
+  font-size: 1.8em;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.search {
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.tips {
+  color: darkgray;
+  font-size: small;
+  display: flex;
+  justify-content: center;
+}
+
+.main {
+  padding: 30px;
+}
+
+.progress-item {
+  display: flex;
+  justify-content: center;
+}
+
+.code-item {
+  margin-left: auto;
+}
+
+/*# sourceMappingURL=index.css.map */
