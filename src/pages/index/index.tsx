@@ -37,6 +37,9 @@ export default function Index() {
     let localSecrets = (await getSecrets()).map((secret) => {
       return URI.parse(secret) as TOTP;
     });
+    if (localSecrets.length == 0) {
+      localSecrets.push(demoSecret as TOTP);
+    }
     setSecrets(localSecrets);
     setTokens(localSecrets.map((secret) => secret.generate()));
     return localSecrets;
@@ -45,7 +48,6 @@ export default function Index() {
   const demoSecret = URI.parse(
     "otpauth://totp/demo@demo.com?secret=JBSWY3DPEHPK3PXP&issuer=Demo"
   );
-
   useDidShow(() => {
     (async () => {
       const localSecrets = await refreshSecrets();
@@ -53,7 +55,8 @@ export default function Index() {
         let remainSeconds =
           (INTERVAL * (1 - ((Date.now() / 1000 / INTERVAL) % 1))) | 0;
         if (remainSeconds == INTERVAL - 1) {
-          setTokens(localSecrets.map((secret) => secret.generate()));
+          const newTokens = localSecrets.map((secret) => secret.generate());
+          setTokens(newTokens);
         }
         let p = ((INTERVAL - remainSeconds) / INTERVAL) * 100;
         setProgress(p);
@@ -116,10 +119,8 @@ export default function Index() {
         />
         <Flex direction="column">
           {(value == ""
-            ? secrets.length > 0
-              ? secrets
-              : [demoSecret]
-            : (secrets.length > 0 ? secrets : [demoSecret]).filter((s) => {
+            ? secrets
+            : secrets.filter((s) => {
                 return (
                   s.issuer.toLowerCase().includes(value.toLowerCase()) ||
                   s.label.toLowerCase().includes(value.toLowerCase())

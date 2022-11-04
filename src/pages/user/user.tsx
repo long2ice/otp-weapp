@@ -23,7 +23,7 @@ export default function User() {
           <Empty>
             <Empty.Image src="error" />
             <Empty.Description>
-              未来将上线云服务同步功能，敬请期待。
+              当前你的所有数据都会保存在本地，为防止因数据清理或微信卸载导致数据丢失，请及时手动备份数据。未来将上线云服务同步功能，敬请期待。
             </Empty.Description>
           </Empty>
         </Flex.Item>
