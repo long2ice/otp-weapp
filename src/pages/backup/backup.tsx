@@ -1,6 +1,6 @@
 import { View } from "@tarojs/components";
 import { Button, Empty, Flex } from "@taroify/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Taro, {
   chooseMessageFile,
@@ -9,8 +9,8 @@ import Taro, {
   showToast,
 } from "@tarojs/taro";
 import "./backup.scss";
-import { addSecrets, getSecrets } from "../../storage";
 import Layout from "../../components/layout";
+import { addSecrets, getSecrets } from "../../storage/secret";
 
 interface FileStat {
   size: number;
@@ -21,37 +21,43 @@ export default function Backup() {
   const fs = getFileSystemManager();
   const filePath = `${Taro.env.USER_DATA_PATH}/otp-backup.json`;
   const [stat, setStat] = useState<FileStat>();
-  const backup = async () => {
-    let secrets = await getSecrets();
-    fs.writeFile({
+  const backup = () => {
+    getSecrets().then((secrets) => {
+      fs.writeFile({
+        filePath: filePath,
+        data: JSON.stringify(secrets),
+        encoding: "utf8",
+        fail: async () => {
+          await showToast({
+            title: "写入本地文件失败",
+            icon: "error",
+          });
+        },
+        success: () => {
+          loadStat();
+        },
+      });
+    });
+    shareFileMessage({
       filePath: filePath,
-      data: JSON.stringify(secrets),
-      encoding: "utf8",
-      fail: () => {
-        showToast({
-          title: "写入本地文件失败",
+      success: async () => {
+        await showToast({
+          title: "备份成功",
+          icon: "success",
+        });
+      },
+      fail: async (e) => {
+        if (e.errMsg == "shareFileMessage:fail canceled") {
+          return;
+        }
+        await showToast({
+          title: "备份失败",
           icon: "error",
         });
       },
-      success: async () => {
-        await shareFileMessage({
-          filePath: filePath,
-          success: () => {
-            showToast({
-              title: "备份成功",
-              icon: "success",
-            });
-          },
-          fail: () => {
-            showToast({
-              title: "备份失败",
-              icon: "error",
-            });
-          },
-        });
-      },
-    });
+    }).then(() => {});
   };
+
   const restore = async () => {
     await chooseMessageFile({
       count: 1,
@@ -65,6 +71,7 @@ export default function Backup() {
         const tempFilePath = tempFiles[0].path;
         fs.readFile({
           filePath: tempFilePath,
+          encoding: "utf8",
           success: async (r) => {
             let secrets;
             try {
@@ -96,7 +103,7 @@ export default function Backup() {
       },
     });
   };
-  useEffect(() => {
+  const loadStat = useCallback(() => {
     fs.stat({
       path: filePath,
       success: (r) => {
@@ -107,7 +114,10 @@ export default function Backup() {
         });
       },
     });
-  });
+  }, [fs, filePath]);
+  useEffect(() => {
+    loadStat();
+  }, [loadStat]);
   return (
     <Layout title="备份 & 恢复" navbar={<View />}>
       <Flex direction="column" align="center">
@@ -115,7 +125,7 @@ export default function Backup() {
           <Empty>
             <Empty.Image />
             <Empty.Description>
-              备份到本地文件，或者从本地文件恢复。密钥内容将以JSON格式存储在本地文件中。
+              密钥内容将以JSON格式存储在本地文件中。因微信小程序限制，你只能备份到聊天消息和从聊天消息恢复。你可以将备份文件发送到文件传输助手。
             </Empty.Description>
           </Empty>
         </Flex.Item>
@@ -129,11 +139,11 @@ export default function Backup() {
         )}
         <Flex.Item className="item">
           <Button color="primary" shape="round" onClick={backup}>
-            备份到本地文件
+            备份到聊天消息
           </Button>
         </Flex.Item>
         <Flex.Item className="item" onClick={restore}>
-          <Button shape="round">从本地文件恢复</Button>
+          <Button shape="round">从聊天消息恢复</Button>
         </Flex.Item>
       </Flex>
     </Layout>

@@ -18,13 +18,13 @@ import {
   Button,
   Navbar,
   Image,
-  SwipeCell,
   Progress,
 } from "@taroify/core";
 
-import { addSecret, deleteSecret, getSecrets } from "../../storage";
 import "./index.scss";
 import Layout from "../../components/layout";
+import { addSecret, deleteSecret, getSecrets } from "../../storage/secret";
+import { API_URL } from "../../constants";
 
 export default function Index() {
   const [value, setValue] = useState<string>("");
@@ -134,36 +134,29 @@ export default function Index() {
                 secrets.length > 0 && setDeleteSecretIndex(index)
               }
             >
-              <SwipeCell>
-                <Flex align="center" justify="start" gutter={10}>
-                  <Flex.Item className="flex">
-                    <Image
-                      style={{ width: "2.5rem", height: "2.5rem" }}
-                      src={`http://127.0.0.1:8000/icon/${item.issuer}.svg`}
-                    />
-                  </Flex.Item>
-                  <Flex.Item>
-                    <Flex direction="column">
-                      <Text className="issuer">{item.issuer}</Text>
-                      <Text className="label">{item.label}</Text>
-                    </Flex>
-                  </Flex.Item>
-                  <Flex.Item className="code-item">
-                    <Text className="code">{tokens[index]}</Text>
-                    <Progress
-                      className="progress"
-                      percent={progress}
-                      label={false}
-                      color={progress > 80 ? "danger" : "primary"}
-                    />
-                  </Flex.Item>
-                </Flex>
-                <SwipeCell.Actions side="right" catchMove>
-                  <Button variant="contained" shape="square" color="danger">
-                    删除
-                  </Button>
-                </SwipeCell.Actions>
-              </SwipeCell>
+              <Flex align="center" justify="start" gutter={10}>
+                <Flex.Item className="flex">
+                  <Image
+                    style={{ width: "2.5rem", height: "2.5rem" }}
+                    src={`${API_URL}/icon/${item.issuer}.svg`}
+                  />
+                </Flex.Item>
+                <Flex.Item>
+                  <Flex direction="column">
+                    <Text className="issuer">{item.issuer}</Text>
+                    <Text className="label">{item.label}</Text>
+                  </Flex>
+                </Flex.Item>
+                <Flex.Item className="code-item">
+                  <Text className="code">{tokens[index]}</Text>
+                  <Progress
+                    className="progress"
+                    percent={progress}
+                    label={false}
+                    color={progress > 80 ? "danger" : "primary"}
+                  />
+                </Flex.Item>
+              </Flex>
             </Flex.Item>
           ))}
         </Flex>

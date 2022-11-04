@@ -1,13 +1,12 @@
 import { TOTP, URI } from "otpauth";
 import { getStorage, setStorage } from "@tarojs/taro";
-
-const key = "secrets";
+import { SECRETS } from "../constants";
 
 export async function addSecret(totp: TOTP) {
   let secrets = await getSecrets();
   secrets.push(totp.toString());
   secrets = [...new Set(secrets)];
-  await setStorage({ key, data: secrets });
+  await setStorage({ key: SECRETS, data: secrets });
 }
 
 export async function addSecrets(secrets: string[]) {
@@ -19,7 +18,7 @@ export async function addSecrets(secrets: string[]) {
 export async function getSecrets(): Promise<string[]> {
   let data;
   await getStorage({
-    key,
+    key: SECRETS,
     fail: () => {
       data = [];
     },
@@ -29,11 +28,11 @@ export async function getSecrets(): Promise<string[]> {
   }).catch(() => {
     data = [];
   });
-  return data;
+  return data.sort();
 }
 
 export async function deleteSecret(index: number) {
   const secrets = await getSecrets();
   secrets.splice(index, 1);
-  await setStorage({ key, data: secrets });
+  await setStorage({ key: SECRETS, data: secrets });
 }
