@@ -3,7 +3,7 @@ export default defineAppConfig({
   subPackages: [
     {
       root: "modules",
-      pages: ["pages/add/add"],
+      pages: ["pages/add/add", "pages/recycle/recycle"],
     },
   ],
   window: {

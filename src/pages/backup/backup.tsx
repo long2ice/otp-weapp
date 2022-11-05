@@ -10,7 +10,7 @@ import Taro, {
 } from "@tarojs/taro";
 import "./backup.scss";
 import Layout from "../../components/layout";
-import { addSecrets, getSecrets } from "../../storage/secret";
+import { addOTPs, getOTPs } from "../../storages/otp";
 
 interface FileStat {
   size: number;
@@ -22,7 +22,7 @@ export default function Backup() {
   const filePath = `${Taro.env.USER_DATA_PATH}/otp-backup.json`;
   const [stat, setStat] = useState<FileStat>();
   const backup = () => {
-    getSecrets().then((secrets) => {
+    getOTPs().then((secrets) => {
       fs.writeFile({
         filePath: filePath,
         data: JSON.stringify(secrets),
@@ -83,7 +83,7 @@ export default function Backup() {
               });
               return;
             }
-            await addSecrets(secrets);
+            await addOTPs(secrets);
             await showToast({
               title: "恢复成功",
               icon: "success",

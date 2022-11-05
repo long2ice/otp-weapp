@@ -1,5 +1,5 @@
 .item {
-  border-radius: 20px;
+  border-radius: 10px;
   width: 100%;
   background-color: white;
   margin-bottom: 30px;
@@ -26,13 +26,6 @@
   border-radius: 10px;
   width: 100%;
   margin-bottom: 30px;
-}
-
-.tips {
-  color: darkgray;
-  font-size: small;
-  display: flex;
-  justify-content: center;
 }
 
 .main {

@@ -1,0 +1,38 @@
+.main {
+  padding: 30px;
+}
+
+.taroify-swipe-cell__actions .taroify-button {
+  height: 100%;
+}
+
+.taroify-cell__title {
+  font-size: larger;
+  color: #333;
+}
+
+.taroify-cell__brief {
+  color: gray;
+  font-size: small;
+}
+
+.tips {
+  margin-top: 30px;
+}
+
+.search {
+  margin-bottom: 30px;
+  border-radius: 10px;
+}
+
+.last-cell {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.first-cell {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/*# sourceMappingURL=recycle.css.map */

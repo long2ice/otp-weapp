@@ -1,33 +1,28 @@
 import { addInterceptor, checkSession } from "@tarojs/taro";
-import { getToken, setToken } from "./storage/auth";
+import { getToken, removeToken } from "./storages/auth";
+import * as auth from "./services/auth";
 
-const interceptor = function (chain) {
+const interceptor = async function (chain) {
+  await checkSession().catch(async () => {
+    await removeToken();
+    await auth.login();
+  });
   const requestParams = chain.requestParams;
-  const { header } = requestParams;
-  header["content-type"] = "application/json";
-  checkSession()
-    .then(async () => {
-      const token = await getToken();
-      if (token) {
-        header["Authorization"] = token;
-      }
-    })
-    .catch(() => {});
-  return chain.proceed(requestParams).then(async (res) => {
+  const token = await getToken();
+  requestParams.header = {
+    Authorization: "Bearer " + token,
+  };
+  return await chain.proceed(requestParams).then(async (res) => {
     switch (res.statusCode) {
-      case 404:
-        return Promise.reject("请求资源不存在");
-      case 500:
-        return Promise.reject("服务端出现了问题");
-      case 403: {
-        return Promise.reject("没有权限访问");
-      }
-      case 401: {
-        await setToken("");
-        return Promise.reject("需要登录");
-      }
       case 200:
-        return res.data;
+        return res;
+      case 401:
+      case 403:
+        await removeToken();
+        await auth.login();
+        return await chain.proceed(requestParams);
+      default:
+        return Promise.reject(res.data);
     }
   });
 };

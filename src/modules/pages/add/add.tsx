@@ -6,7 +6,7 @@ import { navigateBack, showToast } from "@tarojs/taro";
 
 import "./add.scss";
 import Layout from "../../../components/layout";
-import { addSecret } from "../../../storage/secret";
+import { addOTP } from "../../../storages/otp";
 
 export default function Add() {
   const [account, setAccount] = useState("");
@@ -15,7 +15,7 @@ export default function Add() {
   const submit = async () => {
     const uri = `otpauth://totp/${issuer}:${account}?secret=${secret}&issuer=${issuer}`;
     const totp = URI.parse(uri) as TOTP;
-    await addSecret(totp);
+    await addOTP(totp);
     await showToast({
       title: "添加成功",
       icon: "success",
@@ -27,7 +27,7 @@ export default function Add() {
   return (
     <Layout title="添加两步验证码">
       <View className="main">
-        <Form onSubmit={() => {}}>
+        <Form>
           <Cell.Group inset>
             <Form.Item
               name="account"

@@ -1,0 +1,52 @@
+.main {
+  padding: 30px;
+}
+
+.taroify-cell {
+  border-radius: 10px;
+}
+
+.cloud {
+  border-radius: 10px;
+  background-color: white;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+.tips {
+  margin-top: 30px;
+}
+
+.valid-date {
+  font-weight: bold;
+}
+
+.cloud-title {
+  color: gray;
+  margin-bottom: 20px;
+  font-size: large;
+}
+
+.privilege-content {
+  color: gray;
+  font-size: small;
+}
+
+.privilege-title {
+  font-size: large;
+  display: flex;
+  justify-content: center;
+  color: gray;
+}
+
+.privilege {
+  margin-bottom: 30px;
+  border-radius: 10px;
+  background-color: white;
+  padding: 20px;
+
+  image {
+    width: 2.5em;
+    height: 2.5em;
+  }
+}
