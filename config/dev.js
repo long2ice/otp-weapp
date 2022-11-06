@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     NODE_ENV: '"development"',
-    API_URL: '"http://localhost:8000"',
+    API_URL: '"https://local.long2ice.io"',
   },
   defineConstants: {},
   mini: {},

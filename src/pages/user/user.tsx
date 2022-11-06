@@ -8,7 +8,6 @@ import {
   usePullDownRefresh,
 } from "@tarojs/taro";
 import "./user.scss";
-import * as auth from "../../services/auth";
 import * as user from "../../services/user";
 import Layout from "../../components/layout";
 import { getUser } from "../../storages/user";
@@ -27,7 +26,6 @@ export default function User() {
   };
   useEffect(() => {
     (async () => {
-      await auth.login();
       await loadUser();
     })();
   }, []);
@@ -49,6 +47,12 @@ export default function User() {
           <Flex.Item className="cloud-title">云服务有效期</Flex.Item>
           <Flex.Item className="valid-date">
             {expiredDate == null ? "无限制" : expiredDate.toLocaleDateString()}
+          </Flex.Item>
+          <Flex.Item>
+            <Tips>
+              云服务到期后两步验证码将不会再实时同步到云端。
+              你也无法再使用回收站。本地保存的会一直有效。
+            </Tips>
           </Flex.Item>
         </Flex>
         <View className="privilege">
@@ -104,9 +108,6 @@ export default function User() {
         >
           找回误删的两步验证码
         </Cell>
-        <Tips>
-          云服务到期后两步验证码将不会再实时同步到云端。你也无法再使用回收站。
-        </Tips>
       </View>
     </Layout>
   );

@@ -12,7 +12,7 @@ import {
   useDidShow,
   usePullDownRefresh,
 } from "@tarojs/taro";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as OTPAuth from "otpauth";
 import { TOTP, URI } from "otpauth";
 import { Plus } from "@taroify/icons";
@@ -25,23 +25,27 @@ import { API_URL } from "../../constants";
 import { loadAndUpdateOTP } from "../../services/otp";
 import * as otpServices from "../../services/otp";
 import Tips from "../../components/tips";
+import * as auth from "../../services/auth";
 
 export default function Index() {
   const [value, setValue] = useState<string>("");
   const [progress, setProgress] = useState(0);
-  const [secrets, setSecrets] = useState<OTPAuth.TOTP[]>([]);
+  const [otps, setOtps] = useState<OTPAuth.TOTP[]>([]);
   const [tokens, setTokens] = useState<string[]>([]);
-  const refreshOTPs = async () => {
+  const demoSecret = URI.parse(
+    "otpauth://totp/demo@demo.com?secret=JBSWY3DPEHPK3PXP&issuer=Demo"
+  );
+  const refreshOTPs = useCallback(async () => {
     let localOTPs = (await getOTPs()).map((otp) => {
       return URI.parse(otp) as TOTP;
     });
     if (localOTPs.length == 0) {
       localOTPs.push(demoSecret as TOTP);
     }
-    setSecrets(localOTPs);
+    setOtps(localOTPs);
     setTokens(localOTPs.map((otp) => otp.generate()));
     return localOTPs;
-  };
+  }, [demoSecret]);
   const scanQrCode = async () => {
     await scanCode({
       success: async (res) => {
@@ -73,11 +77,9 @@ export default function Index() {
     });
   };
   const INTERVAL = 30;
-  const demoSecret = URI.parse(
-    "otpauth://totp/demo@demo.com?secret=JBSWY3DPEHPK3PXP&issuer=Demo"
-  );
   useEffect(() => {
     (async () => {
+      await auth.login();
       await loadAndUpdateOTP();
       await refreshOTPs();
     })();
@@ -136,8 +138,8 @@ export default function Index() {
         />
         <Flex direction="column">
           {(value == ""
-            ? secrets
-            : secrets.filter((s) => {
+            ? otps
+            : otps.filter((s) => {
                 return (
                   s.issuer.toLowerCase().includes(value.toLowerCase()) ||
                   s.label.toLowerCase().includes(value.toLowerCase())
@@ -149,7 +151,7 @@ export default function Index() {
               className="item"
               onClick={() => copyToken(tokens[index])}
               onLongPress={async () => {
-                if (secrets.length > 0) {
+                if (otps.length > 0) {
                   await showModal({
                     title: "删除两步验证码",
                     content:

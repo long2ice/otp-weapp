@@ -2,6 +2,7 @@ const config = {
   projectName: "otp-fe",
   date: "2022-11-3",
   designWidth: 750,
+  projectConfigName: `project.${process.env.NODE_ENV}.json`,
   deviceRatio: {
     640: 2.34 / 2,
     750: 1,
@@ -23,6 +24,9 @@ const config = {
   mini: {
     optimizeMainPackage: {
       enable: true,
+    },
+    miniCssExtractPluginOption: {
+      ignoreOrder: true,
     },
     webpackChain: (chain) => {
       chain.merge({
@@ -66,6 +70,9 @@ const config = {
   h5: {
     publicPath: "/",
     staticDirectory: "static",
+    devServer: {
+      hot: false,
+    },
     postcss: {
       autoprefixer: {
         enable: true,
