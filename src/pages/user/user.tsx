@@ -50,7 +50,7 @@ export default function User() {
         <Flex.Item>
           <Tips>
             云服务到期后两步验证码将不会再实时同步到云端。
-            你也无法再使用回收站。本地保存的会一直有效。
+            你也无法再使用回收站。本地保存的会一直保留。
           </Tips>
         </Flex.Item>
       </Flex>
