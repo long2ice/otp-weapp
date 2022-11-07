@@ -11,6 +11,7 @@ import Taro, {
 import "./backup.scss";
 import Layout from "../../components/layout";
 import { addOTPs, getOTPs } from "../../storages/otp";
+import { loadAndUpdateOTP } from "../../services/otp";
 
 interface FileStat {
   size: number;
@@ -84,6 +85,7 @@ export default function Backup() {
               return;
             }
             await addOTPs(secrets);
+            await loadAndUpdateOTP();
             await showToast({
               title: "恢复成功",
               icon: "success",
@@ -119,7 +121,7 @@ export default function Backup() {
     loadStat();
   }, [loadStat]);
   return (
-    <Layout title="备份 & 恢复" navbar={<View />}>
+    <Layout title="备份 & 恢复" navbar={<View />} padding="0">
       <Flex direction="column" align="center">
         <Flex.Item className="item">
           <Empty>

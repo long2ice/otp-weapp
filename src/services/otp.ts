@@ -8,9 +8,9 @@ export async function loadAndUpdateOTP() {
   let user = await userStorages.getUser();
   await userStorages.setUser(user);
   const uris = await otpStorages.addOTPs(data);
-  const minus = uris.filter((uri) => !data.includes(uri));
-  if (minus.length > 0) {
-    if (await isCloudAvailable()) {
+  if (await isCloudAvailable()) {
+    const minus = uris.filter((uri) => !data.includes(uri));
+    if (minus.length > 0) {
       await api.addOTPs(minus);
     }
   }

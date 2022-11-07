@@ -21,59 +21,54 @@ export default function Add() {
       icon: "success",
     });
     setTimeout(async () => {
-      await navigateBack({});
+      await navigateBack();
     }, 2000);
   };
   return (
-    <Layout title="添加两步验证码">
-      <View className="main">
-        <Form>
-          <Cell.Group inset>
-            <Form.Item
-              name="account"
-              rules={[{ required: true, message: "请填写账户" }]}
-            >
-              <Form.Label>账户</Form.Label>
-              <Form.Control>
-                <Input
-                  value={account}
-                  onChange={(e) => setAccount(e.detail.value)}
-                />
-              </Form.Control>
-            </Form.Item>
-            <Form.Item
-              name="secret"
-              rules={[{ required: true, message: "请填写密钥" }]}
-            >
-              <Form.Label>密钥</Form.Label>
-              <Form.Control>
-                <Input
-                  password
-                  value={secret}
-                  onChange={(e) => setSecret(e.detail.value)}
-                />
-              </Form.Control>
-            </Form.Item>
-            <Field name="issuer" label={{ align: "left", children: "颁发者" }}>
+    <Layout title="添加两步验证码" padding="0">
+      <Form>
+        <Cell.Group inset>
+          <Form.Item
+            name="account"
+            rules={[{ required: true, message: "请填写账户" }]}
+          >
+            <Form.Label>账户</Form.Label>
+            <Form.Control>
               <Input
-                value={issuer}
-                onChange={(e) => setIssuer(e.detail.value)}
+                value={account}
+                onChange={(e) => setAccount(e.detail.value)}
               />
-            </Field>
-          </Cell.Group>
-          <View style={{ margin: "16px" }}>
-            <Button
-              onClick={submit}
-              shape="round"
-              block
-              color="primary"
-              formType="submit"
-            >
-              提交
-            </Button>
-          </View>
-        </Form>
-      </View>
+            </Form.Control>
+          </Form.Item>
+          <Form.Item
+            name="secret"
+            rules={[{ required: true, message: "请填写密钥" }]}
+          >
+            <Form.Label>密钥</Form.Label>
+            <Form.Control>
+              <Input
+                password
+                value={secret}
+                onChange={(e) => setSecret(e.detail.value)}
+              />
+            </Form.Control>
+          </Form.Item>
+          <Field name="issuer" label={{ align: "left", children: "颁发者" }}>
+            <Input value={issuer} onChange={(e) => setIssuer(e.detail.value)} />
+          </Field>
+        </Cell.Group>
+        <View style={{ margin: "16px" }}>
+          <Button
+            onClick={submit}
+            shape="round"
+            block
+            color="primary"
+            formType="submit"
+          >
+            提交
+          </Button>
+        </View>
+      </Form>
     </Layout>
   );
 }

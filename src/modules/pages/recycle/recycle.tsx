@@ -1,4 +1,3 @@
-import { View } from "@tarojs/components";
 import { Button, Cell, Empty, Search, SwipeCell } from "@taroify/core";
 import { useEffect, useState } from "react";
 import { TOTP, URI } from "otpauth";
@@ -55,84 +54,82 @@ export default function Recycle() {
   };
   return (
     <Layout title="回收站">
-      <View className="main">
-        <Search
-          value={value}
-          placeholder="请输入搜索关键词"
-          className="search"
-          onChange={(e) => {
-            setValue(e.detail.value ?? "");
-          }}
-        />
-        {recycle.length === 0 ? (
-          <Empty>
-            <Empty.Image />
-            <Empty.Description>这里空空如也~</Empty.Description>
-          </Empty>
-        ) : (
-          (value == ""
-            ? recycle
-            : recycle.filter((item) => {
-                return (
-                  item.otp.label.includes(value) ||
-                  item.otp.issuer.includes(value)
-                );
-              })
-          ).map((item, index) => (
-            <SwipeCell
-              key={item.otp.toString()}
-              className={
-                index === recycle.length - 1
-                  ? "last-cell"
-                  : index === 0
-                  ? "first-cell"
-                  : ""
-              }
-            >
-              <Cell title={item.otp.issuer} brief={item.otp.label} clickable>
-                {item.updated_at.toLocaleString()}
-              </Cell>
-              <SwipeCell.Actions side="right" catchMove>
-                <Button
-                  variant="contained"
-                  shape="square"
-                  color="primary"
-                  disabled={!isCloud}
-                  onClick={async () => {
-                    await showLoading();
-                    await restoreItem(item.id);
-                    await hideLoading();
-                  }}
-                >
-                  恢复
-                </Button>
-                <Button
-                  variant="contained"
-                  shape="square"
-                  color="danger"
-                  disabled={!isCloud}
-                  onClick={async () => {
-                    await showModal({
-                      title: "提示",
-                      content: "确定要彻底删除吗？删除后你将无法恢复。",
-                      success: async (res) => {
-                        if (res.confirm) {
-                          await showLoading();
-                          await deleteItem(item.id);
-                          await hideLoading();
-                        }
-                      },
-                    });
-                  }}
-                >
-                  彻底删除
-                </Button>
-              </SwipeCell.Actions>
-            </SwipeCell>
-          ))
-        )}
-        {recycle.length > 0 && <Tips>Tips: 向左滑动可以恢复和彻底删除~</Tips>}
-      </View>
+      <Search
+        value={value}
+        placeholder="请输入搜索关键词"
+        className="search"
+        onChange={(e) => {
+          setValue(e.detail.value ?? "");
+        }}
+      />
+      {recycle.length === 0 ? (
+        <Empty>
+          <Empty.Image />
+          <Empty.Description>这里空空如也~</Empty.Description>
+        </Empty>
+      ) : (
+        (value == ""
+          ? recycle
+          : recycle.filter((item) => {
+              return (
+                item.otp.label.includes(value) ||
+                item.otp.issuer.includes(value)
+              );
+            })
+        ).map((item, index) => (
+          <SwipeCell
+            key={item.otp.toString()}
+            className={
+              index === recycle.length - 1
+                ? "last-cell"
+                : index === 0
+                ? "first-cell"
+                : ""
+            }
+          >
+            <Cell title={item.otp.issuer} brief={item.otp.label} clickable>
+              {item.updated_at.toLocaleString()}
+            </Cell>
+            <SwipeCell.Actions side="right" catchMove>
+              <Button
+                variant="contained"
+                shape="square"
+                color="primary"
+                disabled={!isCloud}
+                onClick={async () => {
+                  await showLoading();
+                  await restoreItem(item.id);
+                  await hideLoading();
+                }}
+              >
+                恢复
+              </Button>
+              <Button
+                variant="contained"
+                shape="square"
+                color="danger"
+                disabled={!isCloud}
+                onClick={async () => {
+                  await showModal({
+                    title: "提示",
+                    content: "确定要彻底删除吗？删除后你将无法恢复。",
+                    success: async (res) => {
+                      if (res.confirm) {
+                        await showLoading();
+                        await deleteItem(item.id);
+                        await hideLoading();
+                      }
+                    },
+                  });
+                }}
+              >
+                彻底删除
+              </Button>
+            </SwipeCell.Actions>
+          </SwipeCell>
+        ))
+      )}
+      {recycle.length > 0 && <Tips>Tips: 向左滑动可以恢复和彻底删除~</Tips>}
     </Layout>
   );
 }

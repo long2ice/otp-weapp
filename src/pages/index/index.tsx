@@ -1,4 +1,4 @@
-import { Text, View } from "@tarojs/components";
+import { Text } from "@tarojs/components";
 import {
   hideLoading,
   navigateTo,
@@ -127,75 +127,73 @@ export default function Index() {
         ></Navbar.NavLeft>
       }
     >
-      <View className="main">
-        <Search
-          value={value}
-          placeholder="请输入搜索关键词"
-          className="search"
-          onChange={(e) => {
-            setValue(e.detail.value ?? "");
-          }}
-        />
-        <Flex direction="column">
-          {(value == ""
-            ? otps
-            : otps.filter((s) => {
-                return (
-                  s.issuer.toLowerCase().includes(value.toLowerCase()) ||
-                  s.label.toLowerCase().includes(value.toLowerCase())
-                );
-              })
-          ).map((item, index) => (
-            <Flex.Item
-              key={index}
-              className="item"
-              onClick={() => copyToken(tokens[index])}
-              onLongPress={async () => {
-                if (otps.length > 0) {
-                  await showModal({
-                    title: "删除两步验证码",
-                    content:
-                      "删除两步验证码可能会导致你无法登录对应网站，确定要删除吗？如果你启用了云服务，可在个人中心回收站中找回。",
-                    success: async (res) => {
-                      if (res.confirm) {
-                        await showLoading();
-                        await otpServices.deleteOTP(index);
-                        await refreshOTPs();
-                        await hideLoading();
-                      }
-                    },
-                  });
-                }
-              }}
-            >
-              <Flex align="center" justify="start" gutter={10}>
-                <Flex.Item className="flex">
-                  <Image
-                    style={{ width: "2.5rem", height: "2.5rem" }}
-                    src={`${API_URL}/icon/${item.issuer}.svg`}
-                  />
-                </Flex.Item>
-                <Flex.Item>
-                  <Flex direction="column">
-                    <Text className="issuer">{item.issuer}</Text>
-                    <Text className="label">{item.label}</Text>
-                  </Flex>
-                </Flex.Item>
-                <Flex.Item className="code-item">
-                  <Text className="code">{tokens[index]}</Text>
-                  <Progress
-                    className="progress"
-                    percent={progress}
-                    label={false}
-                    color={progress > 80 ? "danger" : "primary"}
-                  />
-                </Flex.Item>
-              </Flex>
-            </Flex.Item>
-          ))}
-        </Flex>
-        <Tips>Tips: 点击复制，长按删除~</Tips>
-      </View>
+      <Search
+        value={value}
+        placeholder="请输入搜索关键词"
+        className="search"
+        onChange={(e) => {
+          setValue(e.detail.value ?? "");
+        }}
+      />
+      <Flex direction="column">
+        {(value == ""
+          ? otps
+          : otps.filter((s) => {
+              return (
+                s.issuer.toLowerCase().includes(value.toLowerCase()) ||
+                s.label.toLowerCase().includes(value.toLowerCase())
+              );
+            })
+        ).map((item, index) => (
+          <Flex.Item
+            key={index}
+            className="item"
+            onClick={() => copyToken(tokens[index])}
+            onLongPress={async () => {
+              if (otps.length > 0) {
+                await showModal({
+                  title: "删除两步验证码",
+                  content:
+                    "删除两步验证码可能会导致你无法登录对应网站，确定要删除吗？如果你启用了云服务，可在个人中心回收站中找回。",
+                  success: async (res) => {
+                    if (res.confirm) {
+                      await showLoading();
+                      await otpServices.deleteOTP(index);
+                      await refreshOTPs();
+                      await hideLoading();
+                    }
+                  },
+                });
+              }
+            }}
+          >
+            <Flex align="center" justify="start" gutter={10}>
+              <Flex.Item className="flex">
+                <Image
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                  src={`${API_URL}/icon/${item.issuer}.svg`}
+                />
+              </Flex.Item>
+              <Flex.Item>
+                <Flex direction="column">
+                  <Text className="issuer">{item.issuer}</Text>
+                  <Text className="label">{item.label}</Text>
+                </Flex>
+              </Flex.Item>
+              <Flex.Item className="code-item">
+                <Text className="code">{tokens[index]}</Text>
+                <Progress
+                  className="progress"
+                  percent={progress}
+                  label={false}
+                  color={progress > 80 ? "danger" : "primary"}
+                />
+              </Flex.Item>
+            </Flex>
+          </Flex.Item>
+        ))}
+      </Flex>
+      <Tips>Tips: 点击复制，长按删除~</Tips>
     </Layout>
   );
 }

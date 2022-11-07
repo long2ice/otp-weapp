@@ -1,14 +1,19 @@
 export default defineAppConfig({
   pages: ["pages/index/index", "pages/backup/backup", "pages/user/user"],
+  darkmode: false,
   subPackages: [
     {
       root: "modules",
-      pages: ["pages/add/add", "pages/recycle/recycle"],
+      pages: [
+        "pages/add/add",
+        "pages/recycle/recycle",
+        "pages/feedback/feedback",
+      ],
     },
   ],
   window: {
     backgroundTextStyle: "light",
-    navigationBarBackgroundColor: "#fff",
+    navigationBarBackgroundColor: "#ffffff",
     navigationBarTitleText: "WeChat",
     navigationBarTextStyle: "black",
   },
