@@ -1,17 +1,15 @@
 import { View } from "@tarojs/components";
 import { Button, Form, Textarea } from "@taroify/core";
 import { useState } from "react";
-import { navigateBack, showToast } from "@tarojs/taro";
+import { navigateBack } from "@tarojs/taro";
 import Layout from "../../../components/layout";
 import { AddFeedback } from "../../../apis/feedback";
-
+import * as toast from "../../../components/toast";
 export default function Feedback() {
   const [content, setContent] = useState("");
   const onSubmit = async () => {
     await AddFeedback(content);
-    await showToast({
-      title: "提交成功",
-    });
+    toast.success("提交成功");
     setTimeout(async () => {
       await navigateBack();
     }, 2000);

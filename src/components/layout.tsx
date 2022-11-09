@@ -1,5 +1,5 @@
-import { View } from "@tarojs/components";
-import { ReactNode } from "react";
+import {View} from "@tarojs/components";
+import {ReactNode} from "react";
 import Navbar from "./navbar";
 import "./layout.scss";
 

@@ -18,9 +18,13 @@ const getSign = (
 ) => {
   let kvs = [`timestamp=${timestamp}`, `nonce=${nonce}`];
   for (const k in data) {
-    kvs.push(`${k}=${data[k]}`);
+    let v = data[k];
+    if (typeof v === "object" || Array.isArray(v)) {
+      v = JSON.stringify(v);
+    }
+    kvs.push(`${k}=${v}`);
   }
   let s = kvs.sort().join("&") + `&key=${secret}`;
   return md5(s).toUpperCase();
 };
-export { getSign, getRandomStr };
+export {getSign, getRandomStr};

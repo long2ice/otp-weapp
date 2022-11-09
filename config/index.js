@@ -2,7 +2,6 @@ const config = {
   projectName: "otp-fe",
   date: "2022-11-3",
   designWidth: 750,
-  projectConfigName: `project.${process.env.NODE_ENV}.json`,
   deviceRatio: {
     640: 2.34 / 2,
     750: 1,
@@ -70,6 +69,7 @@ const config = {
   h5: {
     publicPath: "/",
     staticDirectory: "static",
+    esnextModules: ["@taroify"],
     devServer: {
       hot: false,
     },

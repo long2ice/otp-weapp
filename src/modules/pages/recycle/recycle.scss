@@ -14,10 +14,6 @@
   font-size: small;
 }
 
-.tips {
-  margin-top: 30px;
-}
-
 .search {
   margin-bottom: 30px;
   border-radius: 10px;
@@ -31,4 +27,30 @@
 .first-cell {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+}
+
+.issuer {
+  font-size: larger;
+  color: #333;
+}
+
+.label, .update-at {
+  color: gray;
+  font-size: small;
+}
+
+.update-at {
+  margin-left: auto;
+}
+
+.taroify-flex--row {
+  border-radius: 10px;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
 }

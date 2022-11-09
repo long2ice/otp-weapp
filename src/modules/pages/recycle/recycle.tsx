@@ -1,18 +1,18 @@
-import { Button, Cell, Empty, Search, SwipeCell } from "@taroify/core";
-import { useEffect, useState } from "react";
-import { TOTP, URI } from "otpauth";
+import {Button, Dialog, Empty, Flex, Image, Search, SwipeCell, Toast} from "@taroify/core";
+import {useEffect, useState} from "react";
+import {TOTP, URI} from "otpauth";
 import {
-  hideLoading,
-  showLoading,
-  showModal,
   stopPullDownRefresh,
   usePullDownRefresh,
 } from "@tarojs/taro";
 import Layout from "../../../components/layout";
 import "./recycle.scss";
-import { deleteOTPRecycle, getRecycle, restoreOTP } from "../../../apis/otp";
+import {deleteOTPRecycle, getRecycle, restoreOTP} from "../../../apis/otp";
 import Tips from "../../../components/tips";
-import { isCloudAvailable } from "../../../services/cloud";
+import {isCloudAvailable} from "../../../services/cloud";
+import {API_URL} from "../../../constants";
+import {Text} from "@tarojs/components";
+import * as toast from "../../../components/toast";
 
 interface Recycle {
   otp: TOTP;
@@ -36,8 +36,10 @@ export default function Recycle() {
   };
   useEffect(() => {
     (async () => {
+      Toast.loading("加载中");
       await loadRecycle();
       setIsCloud(await isCloudAvailable());
+      Toast.close();
     })();
   }, []);
   usePullDownRefresh(async () => {
@@ -62,15 +64,17 @@ export default function Recycle() {
           setValue(e.detail.value ?? "");
         }}
       />
+      <Dialog id="dialog"/>
+      <Toast id="toast"/>
       {recycle.length === 0 ? (
         <Empty>
-          <Empty.Image />
+          <Empty.Image/>
           <Empty.Description>这里空空如也~</Empty.Description>
         </Empty>
       ) : (
         (value == ""
-          ? recycle
-          : recycle.filter((item) => {
+            ? recycle
+            : recycle.filter((item) => {
               return (
                 item.otp.label.includes(value) ||
                 item.otp.issuer.includes(value)
@@ -83,13 +87,29 @@ export default function Recycle() {
               index === recycle.length - 1
                 ? "last-cell"
                 : index === 0
-                ? "first-cell"
-                : ""
+                  ? "first-cell"
+                  : ""
             }
           >
-            <Cell title={item.otp.issuer} brief={item.otp.label} clickable>
-              {item.updated_at.toLocaleString()}
-            </Cell>
+            <Flex align='center' justify="start" gutter={10}>
+              <Flex.Item className="flex">
+                <Image
+                  style={{width: "2.5rem", height: "2.5rem"}}
+                  src={`${API_URL}/icon/${item.otp.issuer}.svg`}
+                />
+              </Flex.Item>
+              <Flex.Item>
+                <Flex direction="column">
+                  <Text className="issuer">{item.otp.issuer}</Text>
+                  <Text className="label">{item.otp.label}</Text>
+                </Flex>
+              </Flex.Item>
+              <Flex.Item className='update-at'>
+                <Text>
+                  {item.updated_at.toLocaleString()}
+                </Text>
+              </Flex.Item>
+            </Flex>
             <SwipeCell.Actions side="right" catchMove>
               <Button
                 variant="contained"
@@ -97,9 +117,9 @@ export default function Recycle() {
                 color="primary"
                 disabled={!isCloud}
                 onClick={async () => {
-                  await showLoading();
+                  Toast.loading("正在恢复...");
                   await restoreItem(item.id);
-                  await hideLoading();
+                  toast.success("恢复成功");
                 }}
               >
                 恢复
@@ -110,17 +130,15 @@ export default function Recycle() {
                 color="danger"
                 disabled={!isCloud}
                 onClick={async () => {
-                  await showModal({
-                    title: "提示",
-                    content: "确定要彻底删除吗？删除后你将无法恢复。",
-                    success: async (res) => {
-                      if (res.confirm) {
-                        await showLoading();
-                        await deleteItem(item.id);
-                        await hideLoading();
-                      }
-                    },
-                  });
+                  Dialog.confirm({
+                    title: "彻底删除",
+                    message: "确定要彻底删除吗？删除后你将无法恢复。",
+                    onConfirm: async () => {
+                      Toast.loading("正在删除...");
+                      await deleteItem(item.id);
+                      toast.success("删除成功");
+                    }
+                  })
                 }}
               >
                 彻底删除

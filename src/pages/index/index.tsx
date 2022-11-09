@@ -1,37 +1,34 @@
-import { Text } from "@tarojs/components";
+import {Text} from "@tarojs/components";
 import {
-  hideLoading,
   navigateTo,
   scanCode,
   setClipboardData,
-  showActionSheet,
-  showLoading,
-  showModal,
-  showToast,
   stopPullDownRefresh,
   useDidShow,
   usePullDownRefresh,
 } from "@tarojs/taro";
-import { useCallback, useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import * as OTPAuth from "otpauth";
-import { TOTP, URI } from "otpauth";
-import { Plus } from "@taroify/icons";
-import { Flex, Search, Navbar, Image, Progress } from "@taroify/core";
+import {TOTP, URI} from "otpauth";
+import {Plus} from "@taroify/icons";
+import {Flex, Search, Navbar, Image, Progress, Dialog, ActionSheet, Toast} from "@taroify/core";
 
 import "./index.scss";
 import Layout from "../../components/layout";
-import { getOTPs } from "../../storages/otp";
-import { API_URL } from "../../constants";
-import { loadAndUpdateOTP } from "../../services/otp";
+import {getOTPs} from "../../storages/otp";
+import {API_URL} from "../../constants";
+import {loadAndUpdateOTP} from "../../services/otp";
 import * as otpServices from "../../services/otp";
 import Tips from "../../components/tips";
 import * as auth from "../../services/auth";
+import * as toast from "../../components/toast";
 
 export default function Index() {
   const [value, setValue] = useState<string>("");
   const [progress, setProgress] = useState(0);
   const [otps, setOtps] = useState<OTPAuth.TOTP[]>([]);
   const [tokens, setTokens] = useState<string[]>([]);
+  const [actionSheet, setActionSheet] = useState(false);
   const demoSecret = URI.parse(
     "otpauth://totp/demo@demo.com?secret=JBSWY3DPEHPK3PXP&issuer=Demo"
   );
@@ -53,20 +50,17 @@ export default function Index() {
         let parsedTotp = URI.parse(result);
         if (parsedTotp instanceof TOTP) {
           await otpServices.addOTP(result);
+          await refreshOTPs();
+          toast.success(
+            "添加成功",
+          );
         } else {
-          await showToast({
-            title: "无效的二维码",
-            icon: "error",
-          });
+          toast.fail("当前只支持TOTP");
         }
-        await refreshOTPs();
       },
       fail: (e) => {
         if (e.errMsg !== "scanCode:fail cancel") {
-          showToast({
-            title: "扫码失败",
-            icon: "error",
-          });
+          toast.fail("扫码失败");
         }
       },
     });
@@ -79,9 +73,11 @@ export default function Index() {
   const INTERVAL = 30;
   useEffect(() => {
     (async () => {
+      Toast.loading("加载中");
       await auth.login();
       await loadAndUpdateOTP();
       await refreshOTPs();
+      Toast.close();
     })();
   }, []);
   usePullDownRefresh(async () => {
@@ -109,21 +105,8 @@ export default function Index() {
       title="两步验证码"
       navbar={
         <Navbar.NavLeft
-          onClick={async () => {
-            await showActionSheet({
-              itemList: ["扫码添加", "手动添加"],
-              success: async (res) => {
-                if (res.tapIndex == 0) {
-                  await scanQrCode();
-                } else {
-                  await navigateTo({
-                    url: "/modules/pages/add/add",
-                  });
-                }
-              },
-            });
-          }}
-          icon={<Plus />}
+          onClick={() => setActionSheet(true)}
+          icon={<Plus/>}
         ></Navbar.NavLeft>
       }
     >
@@ -135,10 +118,12 @@ export default function Index() {
           setValue(e.detail.value ?? "");
         }}
       />
+      <Toast id="toast"/>
+      <Dialog id="dialog"/>
       <Flex direction="column">
         {(value == ""
-          ? otps
-          : otps.filter((s) => {
+            ? otps
+            : otps.filter((s) => {
               return (
                 s.issuer.toLowerCase().includes(value.toLowerCase()) ||
                 s.label.toLowerCase().includes(value.toLowerCase())
@@ -151,26 +136,23 @@ export default function Index() {
             onClick={() => copyToken(tokens[index])}
             onLongPress={async () => {
               if (otps.length > 0) {
-                await showModal({
+                Dialog.confirm({
                   title: "删除两步验证码",
-                  content:
-                    "删除两步验证码可能会导致你无法登录对应网站，确定要删除吗？如果你启用了云服务，可在个人中心回收站中找回。",
-                  success: async (res) => {
-                    if (res.confirm) {
-                      await showLoading();
-                      await otpServices.deleteOTP(index);
-                      await refreshOTPs();
-                      await hideLoading();
-                    }
-                  },
-                });
+                  message: `删除两步验证码可能会导致你无法登录对应网站，确定要删除吗？如果你启用了云服务，可在个人中心回收站中找回。`,
+                  onConfirm: async () => {
+                    Toast.loading("删除中");
+                    await otpServices.deleteOTP(index);
+                    await refreshOTPs();
+                    toast.success("删除成功");
+                  }
+                })
               }
             }}
           >
             <Flex align="center" justify="start" gutter={10}>
               <Flex.Item className="flex">
                 <Image
-                  style={{ width: "2.5rem", height: "2.5rem" }}
+                  style={{width: "2.5rem", height: "2.5rem"}}
                   src={`${API_URL}/icon/${item.issuer}.svg`}
                 />
               </Flex.Item>
@@ -194,6 +176,26 @@ export default function Index() {
         ))}
       </Flex>
       <Tips>Tips: 点击复制，长按删除~</Tips>
+      <ActionSheet
+        open={actionSheet}
+        onSelect={async (e) => {
+          setActionSheet(false);
+          if (e.value == "1") {
+            await scanQrCode();
+          } else {
+            await navigateTo({
+              url: "/modules/pages/add/add",
+            });
+          }
+        }}
+        onCancel={() => setActionSheet(false)}
+        onClose={setActionSheet}
+      >
+        <ActionSheet.Header>添加两步验证码</ActionSheet.Header>
+        <ActionSheet.Action value="1" name="扫码添加"/>
+        <ActionSheet.Action value="2" name="手动添加"/>
+        <ActionSheet.Button type="cancel">取消</ActionSheet.Button>
+      </ActionSheet>
     </Layout>
   );
 }
