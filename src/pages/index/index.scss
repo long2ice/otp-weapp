@@ -1,9 +1,14 @@
-.item {
+.taroify-flex--row {
   border-radius: 10px;
-  width: 100%;
   background-color: white;
-  margin-bottom: 30px;
   padding: 20px;
+  margin-bottom: 30px;
+}
+
+.taroify-swipe-cell__actions {
+  .taroify-button {
+    height: 100%;
+  }
 }
 
 .issuer {

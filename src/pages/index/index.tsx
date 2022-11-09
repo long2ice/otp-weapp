@@ -11,7 +11,7 @@ import {useCallback, useEffect, useState} from "react";
 import * as OTPAuth from "otpauth";
 import {TOTP, URI} from "otpauth";
 import {Plus} from "@taroify/icons";
-import {Flex, Search, Navbar, Image, Progress, Dialog, ActionSheet, Toast} from "@taroify/core";
+import {Flex, Search, Navbar, Image, Progress, Dialog, ActionSheet, Toast, SwipeCell, Button} from "@taroify/core";
 
 import "./index.scss";
 import Layout from "../../components/layout";
@@ -120,21 +120,41 @@ export default function Index() {
       />
       <Toast id="toast"/>
       <Dialog id="dialog"/>
-      <Flex direction="column">
-        {(value == ""
-            ? otps
-            : otps.filter((s) => {
-              return (
-                s.issuer.toLowerCase().includes(value.toLowerCase()) ||
-                s.label.toLowerCase().includes(value.toLowerCase())
-              );
-            })
-        ).map((item, index) => (
-          <Flex.Item
-            key={index}
-            className="item"
-            onClick={() => copyToken(tokens[index])}
-            onLongPress={async () => {
+      {(value == ""
+          ? otps
+          : otps.filter((s) => {
+            return (
+              s.issuer.toLowerCase().includes(value.toLowerCase()) ||
+              s.label.toLowerCase().includes(value.toLowerCase())
+            );
+          })
+      ).map((item, index) => (
+        <SwipeCell key={index} onClick={() => copyToken(tokens[index])}>
+          <Flex align="center" justify="start" gutter={10}>
+            <Flex.Item className="flex">
+              <Image
+                style={{width: "2.5rem", height: "2.5rem"}}
+                src={`${API_URL}/icon/${item.issuer}.svg`}
+              />
+            </Flex.Item>
+            <Flex.Item>
+              <Flex direction="column">
+                <Text className="issuer">{item.issuer}</Text>
+                <Text className="label">{item.label}</Text>
+              </Flex>
+            </Flex.Item>
+            <Flex.Item className="code-item">
+              <Text className="code">{tokens[index]}</Text>
+              <Progress
+                className="progress"
+                percent={progress}
+                label={false}
+                color={progress > 80 ? "danger" : "primary"}
+              />
+            </Flex.Item>
+          </Flex>
+          <SwipeCell.Actions side="right" catchMove>
+            <Button variant="contained" shape="square" color="danger" onClick={async () => {
               if (otps.length > 0) {
                 Dialog.confirm({
                   title: "删除两步验证码",
@@ -147,35 +167,11 @@ export default function Index() {
                   }
                 })
               }
-            }}
-          >
-            <Flex align="center" justify="start" gutter={10}>
-              <Flex.Item className="flex">
-                <Image
-                  style={{width: "2.5rem", height: "2.5rem"}}
-                  src={`${API_URL}/icon/${item.issuer}.svg`}
-                />
-              </Flex.Item>
-              <Flex.Item>
-                <Flex direction="column">
-                  <Text className="issuer">{item.issuer}</Text>
-                  <Text className="label">{item.label}</Text>
-                </Flex>
-              </Flex.Item>
-              <Flex.Item className="code-item">
-                <Text className="code">{tokens[index]}</Text>
-                <Progress
-                  className="progress"
-                  percent={progress}
-                  label={false}
-                  color={progress > 80 ? "danger" : "primary"}
-                />
-              </Flex.Item>
-            </Flex>
-          </Flex.Item>
-        ))}
-      </Flex>
-      <Tips>Tips: 点击复制，长按删除~</Tips>
+            }}>删除</Button>
+          </SwipeCell.Actions>
+        </SwipeCell>
+      ))}
+      <Tips>Tips: 向左滑动删除~</Tips>
       <ActionSheet
         open={actionSheet}
         onSelect={async (e) => {

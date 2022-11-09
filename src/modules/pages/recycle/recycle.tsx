@@ -80,16 +80,9 @@ export default function Recycle() {
                 item.otp.issuer.includes(value)
               );
             })
-        ).map((item, index) => (
+        ).map((item, _) => (
           <SwipeCell
             key={item.otp.toString()}
-            className={
-              index === recycle.length - 1
-                ? "last-cell"
-                : index === 0
-                  ? "first-cell"
-                  : ""
-            }
           >
             <Flex align='center' justify="start" gutter={10}>
               <Flex.Item className="flex">
