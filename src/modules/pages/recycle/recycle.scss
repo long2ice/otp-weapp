@@ -4,6 +4,34 @@
   }
 }
 
+.item {
+  border-radius: 10px;
+  background-color: white;
+  margin-bottom: 30px;
+}
+
+.taroify-swipe-cell {
+  border-radius: 10px;
+}
+
+.flex-item {
+  padding: 20px;
+}
+
+.taroify-swipe-cell__left {
+  .taroify-button {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+}
+
+.taroify-swipe-cell__right {
+  .taroify-button {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+}
+
 .taroify-cell__title {
   font-size: larger;
   color: #333;
@@ -31,13 +59,6 @@
 
 .update-at {
   margin-left: auto;
-}
-
-.taroify-flex--row {
-  border-radius: 10px;
-  background-color: white;
-  padding: 20px;
-  margin-bottom: 30px;
 }
 
 .flex {

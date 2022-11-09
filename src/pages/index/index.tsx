@@ -1,4 +1,4 @@
-import {Text} from "@tarojs/components";
+import { Text, View } from "@tarojs/components";
 import {
   navigateTo,
   scanCode,
@@ -7,17 +7,28 @@ import {
   useDidShow,
   usePullDownRefresh,
 } from "@tarojs/taro";
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as OTPAuth from "otpauth";
-import {TOTP, URI} from "otpauth";
-import {Plus} from "@taroify/icons";
-import {Flex, Search, Navbar, Image, Progress, Dialog, ActionSheet, Toast, SwipeCell, Button} from "@taroify/core";
+import { TOTP, URI } from "otpauth";
+import { Plus, StarOutlined, DeleteOutlined, Edit } from "@taroify/icons";
+import {
+  Flex,
+  Search,
+  Navbar,
+  Image,
+  Progress,
+  Dialog,
+  ActionSheet,
+  Toast,
+  SwipeCell,
+  Button,
+} from "@taroify/core";
 
 import "./index.scss";
 import Layout from "../../components/layout";
-import {getOTPs} from "../../storages/otp";
-import {API_URL} from "../../constants";
-import {loadAndUpdateOTP} from "../../services/otp";
+import { getOTPs } from "../../storages/otp";
+import { API_URL } from "../../constants";
+import { loadAndUpdateOTP } from "../../services/otp";
 import * as otpServices from "../../services/otp";
 import Tips from "../../components/tips";
 import * as auth from "../../services/auth";
@@ -51,9 +62,7 @@ export default function Index() {
         if (parsedTotp instanceof TOTP) {
           await otpServices.addOTP(result);
           await refreshOTPs();
-          toast.success(
-            "添加成功",
-          );
+          toast.success("添加成功");
         } else {
           toast.fail("当前只支持TOTP");
         }
@@ -106,7 +115,7 @@ export default function Index() {
       navbar={
         <Navbar.NavLeft
           onClick={() => setActionSheet(true)}
-          icon={<Plus/>}
+          icon={<Plus />}
         ></Navbar.NavLeft>
       }
     >
@@ -118,60 +127,88 @@ export default function Index() {
           setValue(e.detail.value ?? "");
         }}
       />
-      <Toast id="toast"/>
-      <Dialog id="dialog"/>
+      <Toast id="toast" />
+      <Dialog id="dialog" />
       {(value == ""
-          ? otps
-          : otps.filter((s) => {
+        ? otps
+        : otps.filter((s) => {
             return (
               s.issuer.toLowerCase().includes(value.toLowerCase()) ||
               s.label.toLowerCase().includes(value.toLowerCase())
             );
           })
       ).map((item, index) => (
-        <SwipeCell key={index} onClick={() => copyToken(tokens[index])}>
-          <Flex align="center" justify="start" gutter={10}>
-            <Flex.Item className="flex">
-              <Image
-                style={{width: "2.5rem", height: "2.5rem"}}
-                src={`${API_URL}/icon/${item.issuer}.svg`}
+        <View className="item">
+          <SwipeCell key={index} onClick={() => copyToken(tokens[index])}>
+            <SwipeCell.Actions side="left" catchMove>
+              <Button
+                variant="contained"
+                shape="square"
+                color="primary"
+                icon={<StarOutlined size="20px" />}
               />
-            </Flex.Item>
-            <Flex.Item>
-              <Flex direction="column">
-                <Text className="issuer">{item.issuer}</Text>
-                <Text className="label">{item.label}</Text>
-              </Flex>
-            </Flex.Item>
-            <Flex.Item className="code-item">
-              <Text className="code">{tokens[index]}</Text>
-              <Progress
-                className="progress"
-                percent={progress}
-                label={false}
-                color={progress > 80 ? "danger" : "primary"}
+            </SwipeCell.Actions>
+            <Flex
+              align="center"
+              justify="start"
+              gutter={10}
+              className="flex-item"
+            >
+              <Flex.Item className="flex">
+                <Image
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                  src={`${API_URL}/icon/${item.issuer}.svg`}
+                />
+              </Flex.Item>
+              <Flex.Item>
+                <Flex direction="column">
+                  <Text className="issuer">{item.issuer}</Text>
+                  <Text className="label">{item.label}</Text>
+                </Flex>
+              </Flex.Item>
+              <Flex.Item className="code-item">
+                <Text className="code">{tokens[index]}</Text>
+                <Progress
+                  className="progress"
+                  percent={progress}
+                  label={false}
+                  color={progress > 80 ? "danger" : "primary"}
+                />
+              </Flex.Item>
+            </Flex>
+            <SwipeCell.Actions side="right" catchMove>
+              <Button
+                variant="contained"
+                shape="square"
+                icon={<Edit size="20px" />}
+                color="primary"
               />
-            </Flex.Item>
-          </Flex>
-          <SwipeCell.Actions side="right" catchMove>
-            <Button variant="contained" shape="square" color="danger" onClick={async () => {
-              if (otps.length > 0) {
-                Dialog.confirm({
-                  title: "删除两步验证码",
-                  message: `删除两步验证码可能会导致你无法登录对应网站，确定要删除吗？如果你启用了云服务，可在个人中心回收站中找回。`,
-                  onConfirm: async () => {
-                    Toast.loading("删除中");
-                    await otpServices.deleteOTP(index);
-                    await refreshOTPs();
-                    toast.success("删除成功");
+              <Button
+                variant="contained"
+                shape="square"
+                color="danger"
+                className="action-button"
+                onClick={async () => {
+                  if (otps.length > 0) {
+                    Dialog.confirm({
+                      title: "删除两步验证码",
+                      message: `删除两步验证码可能会导致你无法登录对应网站，确定要删除吗？如果你启用了云服务，可在个人中心回收站中找回。`,
+                      onConfirm: async () => {
+                        Toast.loading("删除中");
+                        await otpServices.deleteOTP(index);
+                        await refreshOTPs();
+                        toast.success("删除成功");
+                      },
+                    });
                   }
-                })
-              }
-            }}>删除</Button>
-          </SwipeCell.Actions>
-        </SwipeCell>
+                }}
+                icon={<DeleteOutlined size="20px" />}
+              />
+            </SwipeCell.Actions>
+          </SwipeCell>
+        </View>
       ))}
-      <Tips>Tips: 向左滑动删除~</Tips>
+      <Tips>Tips: 左右滑动可以删除和收藏~</Tips>
       <ActionSheet
         open={actionSheet}
         onSelect={async (e) => {
@@ -188,8 +225,8 @@ export default function Index() {
         onClose={setActionSheet}
       >
         <ActionSheet.Header>添加两步验证码</ActionSheet.Header>
-        <ActionSheet.Action value="1" name="扫码添加"/>
-        <ActionSheet.Action value="2" name="手动添加"/>
+        <ActionSheet.Action value="1" name="扫码添加" />
+        <ActionSheet.Action value="2" name="手动添加" />
         <ActionSheet.Button type="cancel">取消</ActionSheet.Button>
       </ActionSheet>
     </Layout>
