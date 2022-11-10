@@ -10,7 +10,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import * as OTPAuth from "otpauth";
 import { TOTP, URI } from "otpauth";
-import { Plus, StarOutlined, DeleteOutlined, Edit } from "@taroify/icons";
+import { Plus, DeleteOutlined } from "@taroify/icons";
 import {
   Flex,
   Search,
@@ -138,16 +138,8 @@ export default function Index() {
             );
           })
       ).map((item, index) => (
-        <View className="item">
-          <SwipeCell key={index} onClick={() => copyToken(tokens[index])}>
-            <SwipeCell.Actions side="left" catchMove>
-              <Button
-                variant="contained"
-                shape="square"
-                color="primary"
-                icon={<StarOutlined size="20px" />}
-              />
-            </SwipeCell.Actions>
+        <View className="item" key={index}>
+          <SwipeCell onClick={() => copyToken(tokens[index])}>
             <Flex
               align="center"
               justify="start"
@@ -180,12 +172,6 @@ export default function Index() {
               <Button
                 variant="contained"
                 shape="square"
-                icon={<Edit size="20px" />}
-                color="primary"
-              />
-              <Button
-                variant="contained"
-                shape="square"
                 color="danger"
                 className="action-button"
                 onClick={async () => {
@@ -208,7 +194,7 @@ export default function Index() {
           </SwipeCell>
         </View>
       ))}
-      <Tips>Tips: 左右滑动可以删除和收藏~</Tips>
+      <Tips>Tips: 向左滑动可以删除，下拉刷新~</Tips>
       <ActionSheet
         open={actionSheet}
         onSelect={async (e) => {

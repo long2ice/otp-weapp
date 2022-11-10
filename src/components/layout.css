@@ -1,6 +1,7 @@
 .layout {
   background-color: #F3F4F6;
   height: 100vh;
+  overflow-y: hidden;
 }
 
 /*# sourceMappingURL=layout.css.map */

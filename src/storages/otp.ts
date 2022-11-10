@@ -30,7 +30,7 @@ export async function getOTPs(): Promise<string[]> {
   }).catch(() => {
     data = [];
   });
-  return data;
+  return data.sort();
 }
 
 export async function deleteOTP(index: number) {
