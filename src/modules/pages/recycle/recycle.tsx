@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Button,
   Dialog,
@@ -42,12 +43,13 @@ export default function Recycle() {
     );
   };
   useEffect(() => {
+    Toast.loading("加载中");
     (async () => {
-      Toast.loading("加载中");
       await loadRecycle();
       setIsCloud(await isCloudAvailable());
+    })().finally(() => {
       Toast.close();
-    })();
+    });
   }, []);
   usePullDownRefresh(async () => {
     await loadRecycle();
@@ -61,8 +63,15 @@ export default function Recycle() {
     await deleteOTPRecycle(id);
     await loadRecycle();
   };
+
   return (
-    <Layout title="回收站">
+    <Layout
+      title="回收站"
+      refresherEnabled
+      onRefresherRefresh={async () => {
+        await loadRecycle();
+      }}
+    >
       <Search
         value={value}
         placeholder="请输入搜索关键词"
@@ -71,8 +80,6 @@ export default function Recycle() {
           setValue(e.detail.value ?? "");
         }}
       />
-      <Dialog id="dialog" />
-      <Toast id="toast" />
       {recycle.length === 0 ? (
         <Empty>
           <Empty.Image />
@@ -88,8 +95,8 @@ export default function Recycle() {
               );
             })
         ).map((item, _) => (
-          <View className="item">
-            <SwipeCell key={item.otp.toString()}>
+          <View className="item" key={item.id}>
+            <SwipeCell catchMove={false}>
               <SwipeCell.Actions side="left" catchMove>
                 <Button
                   variant="contained"

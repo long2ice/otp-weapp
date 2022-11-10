@@ -15411,6 +15411,10 @@ taro-css-to-react-native@3.5.7:
     css-mediaquery "^0.1.2"
     postcss-value-parser "^3.3.0"
 
+"taroify@https://github.com/mallfoundry/taroify/tarball/5585a8d1efd63d19564c144e438ace432d8f085e":
+  version "0.1.0-alpha.1"
+  resolved "https://github.com/mallfoundry/taroify/tarball/5585a8d1efd63d19564c144e438ace432d8f085e#bc918e72d6474234bbda935076dd3f3e0e2b4a55"
+
 temp-dir@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/temp-dir/-/temp-dir-1.0.0.tgz#0a7c0ea26d3a39afa7e0ebea9c1fc0bc4daa011d"

@@ -1,11 +1,10 @@
+// @ts-nocheck
 import { Text, View } from "@tarojs/components";
 import {
   navigateTo,
   scanCode,
   setClipboardData,
-  stopPullDownRefresh,
   useDidShow,
-  usePullDownRefresh,
 } from "@tarojs/taro";
 import { useCallback, useEffect, useState } from "react";
 import * as OTPAuth from "otpauth";
@@ -81,19 +80,15 @@ export default function Index() {
   };
   const INTERVAL = 30;
   useEffect(() => {
+    Toast.loading("加载中");
     (async () => {
-      Toast.loading("加载中");
       await auth.login();
       await loadAndUpdateOTP();
       await refreshOTPs();
+    })().finally(() => {
       Toast.close();
-    })();
+    });
   }, []);
-  usePullDownRefresh(async () => {
-    await loadAndUpdateOTP();
-    await refreshOTPs();
-    await stopPullDownRefresh();
-  });
   useDidShow(() => {
     (async () => {
       const localOTPs = await refreshOTPs();
@@ -118,6 +113,33 @@ export default function Index() {
           icon={<Plus />}
         ></Navbar.NavLeft>
       }
+      refresherEnabled
+      onRefresherRefresh={async () => {
+        await loadAndUpdateOTP();
+        await refreshOTPs();
+      }}
+      brother={
+        <ActionSheet
+          open={actionSheet}
+          onSelect={async (e) => {
+            setActionSheet(false);
+            if (e.value == "1") {
+              await scanQrCode();
+            } else {
+              await navigateTo({
+                url: "/modules/pages/add/add",
+              });
+            }
+          }}
+          onCancel={() => setActionSheet(false)}
+          onClose={setActionSheet}
+        >
+          <ActionSheet.Header>添加两步验证码</ActionSheet.Header>
+          <ActionSheet.Action value="1" name="扫码添加" />
+          <ActionSheet.Action value="2" name="手动添加" />
+          <ActionSheet.Button type="cancel">取消</ActionSheet.Button>
+        </ActionSheet>
+      }
     >
       <Search
         value={value}
@@ -127,8 +149,6 @@ export default function Index() {
           setValue(e.detail.value ?? "");
         }}
       />
-      <Toast id="toast" />
-      <Dialog id="dialog" />
       {(value == ""
         ? otps
         : otps.filter((s) => {
@@ -139,7 +159,7 @@ export default function Index() {
           })
       ).map((item, index) => (
         <View className="item" key={index}>
-          <SwipeCell onClick={() => copyToken(tokens[index])}>
+          <SwipeCell onClick={() => copyToken(tokens[index])} catchMove={false}>
             <Flex
               align="center"
               justify="start"
@@ -195,26 +215,6 @@ export default function Index() {
         </View>
       ))}
       <Tips>Tips: 向左滑动可以删除，下拉刷新~</Tips>
-      <ActionSheet
-        open={actionSheet}
-        onSelect={async (e) => {
-          setActionSheet(false);
-          if (e.value == "1") {
-            await scanQrCode();
-          } else {
-            await navigateTo({
-              url: "/modules/pages/add/add",
-            });
-          }
-        }}
-        onCancel={() => setActionSheet(false)}
-        onClose={setActionSheet}
-      >
-        <ActionSheet.Header>添加两步验证码</ActionSheet.Header>
-        <ActionSheet.Action value="1" name="扫码添加" />
-        <ActionSheet.Action value="2" name="手动添加" />
-        <ActionSheet.Button type="cancel">取消</ActionSheet.Button>
-      </ActionSheet>
     </Layout>
   );
 }

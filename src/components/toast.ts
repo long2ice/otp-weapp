@@ -1,19 +1,15 @@
-import {Toast} from "@taroify/core";
-
-function close() {
-  setTimeout(() => {
-    Toast.close();
-  }, 2000)
-}
+import { Toast } from "@taroify/core";
 
 export function success(msg: string) {
-  Toast.success(msg);
-  close();
+  Toast.success({
+    message: msg,
+    duration: 900,
+  });
 }
 
 export function fail(msg: string) {
-  Toast.fail(msg);
-  close();
+  Toast.fail({
+    message: msg,
+    duration: 900,
+  });
 }
-
-

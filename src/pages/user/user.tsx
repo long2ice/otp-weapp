@@ -2,11 +2,7 @@ import { Flex, Image, Cell, Divider } from "@taroify/core";
 import { View } from "@tarojs/components";
 import { useEffect, useState } from "react";
 import { Arrow, DeleteOutlined, CommentOutlined } from "@taroify/icons";
-import {
-  navigateTo,
-  stopPullDownRefresh,
-  usePullDownRefresh,
-} from "@tarojs/taro";
+import { navigateTo } from "@tarojs/taro";
 import "./user.scss";
 import * as user from "../../services/user";
 import Layout from "../../components/layout";
@@ -29,14 +25,17 @@ export default function User() {
       await loadUser();
     })();
   }, []);
-  usePullDownRefresh(async () => {
-    await user.getUser();
-    await loadUser();
-    await stopPullDownRefresh();
-  });
 
   return (
-    <Layout title="个人中心" navbar={<View />}>
+    <Layout
+      title="个人中心"
+      navbar={<View />}
+      refresherEnabled
+      onRefresherRefresh={async () => {
+        await user.getUser();
+        await loadUser();
+      }}
+    >
       <Flex
         className="cloud"
         justify="center"
