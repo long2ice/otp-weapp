@@ -1,12 +1,12 @@
-import { Flex, Image, Cell, Divider } from "@taroify/core";
-import { View } from "@tarojs/components";
-import { useEffect, useState } from "react";
-import { Arrow, DeleteOutlined, CommentOutlined } from "@taroify/icons";
-import { navigateTo } from "@tarojs/taro";
+import {Flex, Image, Cell, Divider} from "@taroify/core";
+import {View} from "@tarojs/components";
+import {useEffect, useState} from "react";
+import {Arrow, DeleteOutlined, CommentOutlined, InfoOutlined} from "@taroify/icons";
+import {navigateTo} from "@tarojs/taro";
 import "./user.scss";
 import * as user from "../../services/user";
 import Layout from "../../components/layout";
-import { getUser } from "../../storages/user";
+import {getUser} from "../../storages/user";
 import cloud from "../../assets/cloud.svg";
 import trash from "../../assets/trash-restore.svg";
 import phone from "../../assets/phone.svg";
@@ -29,7 +29,7 @@ export default function User() {
   return (
     <Layout
       title="个人中心"
-      navbar={<View />}
+      navbar={<View/>}
       refresherEnabled
       onRefresherRefresh={async () => {
         await user.getUser();
@@ -55,7 +55,7 @@ export default function User() {
       </Flex>
       <View className="privilege">
         <View className="privilege-title">三大功能</View>
-        <Divider />
+        <Divider/>
         <Flex
           className="privilege-content"
           align="center"
@@ -64,7 +64,7 @@ export default function User() {
           <Flex.Item span={6}>
             <Flex justify="center" align="center" direction="column">
               <Flex.Item>
-                <Image src={cloud} />
+                <Image src={cloud}/>
               </Flex.Item>
               <Flex.Item>
                 <View>云端保存</View>
@@ -74,7 +74,7 @@ export default function User() {
           <Flex.Item span={6}>
             <Flex justify="center" align="center" direction="column">
               <Flex.Item>
-                <Image src={trash} />
+                <Image src={trash}/>
               </Flex.Item>
               <Flex.Item>
                 <View>误删找回</View>
@@ -84,7 +84,7 @@ export default function User() {
           <Flex.Item span={6}>
             <Flex justify="center" align="center" direction="column">
               <Flex.Item>
-                <Image src={phone} />
+                <Image src={phone}/>
               </Flex.Item>
               <Flex.Item>
                 <View>多设备同步</View>
@@ -94,13 +94,13 @@ export default function User() {
         </Flex>
       </View>
       <Cell
-        icon={<DeleteOutlined />}
+        icon={<DeleteOutlined/>}
         title="回收站"
         style={{
           borderTopLeftRadius: "10px",
           borderTopRightRadius: "10px",
         }}
-        rightIcon={<Arrow />}
+        rightIcon={<Arrow/>}
         clickable
         onClick={async () => {
           await navigateTo({
@@ -109,18 +109,29 @@ export default function User() {
         }}
       ></Cell>
       <Cell
-        style={{
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
-        }}
-        icon={<CommentOutlined />}
+        icon={<CommentOutlined/>}
         onClick={async () => {
           await navigateTo({
             url: "/modules/pages/feedback/feedback",
           });
         }}
-        rightIcon={<Arrow />}
+        rightIcon={<Arrow/>}
         title="反馈"
+        clickable
+      ></Cell>
+      <Cell
+        style={{
+          borderBottomLeftRadius: "10px",
+          borderBottomRightRadius: "10px",
+        }}
+        icon={<InfoOutlined/>}
+        onClick={async () => {
+          await navigateTo({
+            url: "/modules/pages/about/about",
+          });
+        }}
+        rightIcon={<Arrow/>}
+        title="关于"
         clickable
       ></Cell>
     </Layout>

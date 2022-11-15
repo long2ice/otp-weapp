@@ -8,6 +8,7 @@ export default defineAppConfig({
         "pages/add/add",
         "pages/recycle/recycle",
         "pages/feedback/feedback",
+        "pages/about/about",
       ],
     },
   ],
