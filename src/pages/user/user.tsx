@@ -1,12 +1,17 @@
-import {Flex, Image, Cell, Divider} from "@taroify/core";
-import {View} from "@tarojs/components";
-import {useEffect, useState} from "react";
-import {Arrow, DeleteOutlined, CommentOutlined, InfoOutlined} from "@taroify/icons";
-import {navigateTo} from "@tarojs/taro";
+import { Flex, Image, Cell, Divider } from "@taroify/core";
+import { View } from "@tarojs/components";
+import { useEffect, useState } from "react";
+import {
+  Arrow,
+  DeleteOutlined,
+  CommentOutlined,
+  InfoOutlined,
+} from "@taroify/icons";
+import { navigateTo } from "@tarojs/taro";
 import "./user.scss";
 import * as user from "../../services/user";
 import Layout from "../../components/layout";
-import {getUser} from "../../storages/user";
+import { getUser } from "../../storages/user";
 import cloud from "../../assets/cloud.svg";
 import trash from "../../assets/trash-restore.svg";
 import phone from "../../assets/phone.svg";
@@ -29,7 +34,7 @@ export default function User() {
   return (
     <Layout
       title="个人中心"
-      navbar={<View/>}
+      navbar={<View />}
       refresherEnabled
       onRefresherRefresh={async () => {
         await user.getUser();
@@ -42,20 +47,19 @@ export default function User() {
         direction="column"
         align="center"
       >
-        <Flex.Item className="cloud-title">云服务有效期</Flex.Item>
+        <Flex.Item className="cloud-title">云服务到期时间</Flex.Item>
         <Flex.Item className="valid-date">
-          {expiredDate == null ? "无限制" : expiredDate.toLocaleDateString()}
+          {expiredDate == null ? "无限期" : expiredDate.toLocaleDateString()}
         </Flex.Item>
         <Flex.Item>
           <Tips>
-            云服务到期后两步验证码将不会再实时同步到云端。
-            你也无法再使用回收站。本地保存的会一直保留。
+            云服务到期后两步验证码将不会再实时同步到云端，也无法再使用回收站，但是保存在本地的验证码永远可以使用。
           </Tips>
         </Flex.Item>
       </Flex>
       <View className="privilege">
         <View className="privilege-title">三大功能</View>
-        <Divider/>
+        <Divider />
         <Flex
           className="privilege-content"
           align="center"
@@ -64,7 +68,7 @@ export default function User() {
           <Flex.Item span={6}>
             <Flex justify="center" align="center" direction="column">
               <Flex.Item>
-                <Image src={cloud}/>
+                <Image src={cloud} />
               </Flex.Item>
               <Flex.Item>
                 <View>云端保存</View>
@@ -74,7 +78,7 @@ export default function User() {
           <Flex.Item span={6}>
             <Flex justify="center" align="center" direction="column">
               <Flex.Item>
-                <Image src={trash}/>
+                <Image src={trash} />
               </Flex.Item>
               <Flex.Item>
                 <View>误删找回</View>
@@ -84,7 +88,7 @@ export default function User() {
           <Flex.Item span={6}>
             <Flex justify="center" align="center" direction="column">
               <Flex.Item>
-                <Image src={phone}/>
+                <Image src={phone} />
               </Flex.Item>
               <Flex.Item>
                 <View>多设备同步</View>
@@ -94,13 +98,13 @@ export default function User() {
         </Flex>
       </View>
       <Cell
-        icon={<DeleteOutlined/>}
+        icon={<DeleteOutlined />}
         title="回收站"
         style={{
           borderTopLeftRadius: "10px",
           borderTopRightRadius: "10px",
         }}
-        rightIcon={<Arrow/>}
+        rightIcon={<Arrow />}
         clickable
         onClick={async () => {
           await navigateTo({
@@ -109,13 +113,13 @@ export default function User() {
         }}
       ></Cell>
       <Cell
-        icon={<CommentOutlined/>}
+        icon={<CommentOutlined />}
         onClick={async () => {
           await navigateTo({
             url: "/modules/pages/feedback/feedback",
           });
         }}
-        rightIcon={<Arrow/>}
+        rightIcon={<Arrow />}
         title="反馈"
         clickable
       ></Cell>
@@ -124,13 +128,13 @@ export default function User() {
           borderBottomLeftRadius: "10px",
           borderBottomRightRadius: "10px",
         }}
-        icon={<InfoOutlined/>}
+        icon={<InfoOutlined />}
         onClick={async () => {
           await navigateTo({
             url: "/modules/pages/about/about",
           });
         }}
-        rightIcon={<Arrow/>}
+        rightIcon={<Arrow />}
         title="关于"
         clickable
       ></Cell>

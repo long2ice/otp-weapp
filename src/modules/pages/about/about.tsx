@@ -15,6 +15,7 @@ export default function About() {
   return (
     <Layout title="关于" padding="0">
       <Flex justify="center" align="center" direction="column">
+        <Flex.Item className="item title">OTP两步验证器</Flex.Item>
         <Flex.Item className="item">
           <Image
             src="https://s1.ax1x.com/2022/11/15/zEJX1P.jpg"
