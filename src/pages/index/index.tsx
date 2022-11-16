@@ -37,7 +37,6 @@ export default function Index() {
   const [value, setValue] = useState<string>("");
   const [progress, setProgress] = useState(0);
   const [otps, setOtps] = useState<OTPAuth.TOTP[]>([]);
-  const [tokens, setTokens] = useState<string[]>([]);
   const [actionSheet, setActionSheet] = useState(false);
   const demoSecret = URI.parse(
     "otpauth://totp/demo@demo.com?secret=JBSWY3DPEHPK3PXP&issuer=Demo"
@@ -50,7 +49,6 @@ export default function Index() {
       localOTPs.push(demoSecret as TOTP);
     }
     setOtps(localOTPs);
-    setTokens(localOTPs.map((otp) => otp.generate()));
     return localOTPs;
   }, [demoSecret]);
   const scanQrCode = async () => {
@@ -85,23 +83,19 @@ export default function Index() {
       await auth.login();
       await loadAndUpdateOTP();
       await refreshOTPs();
+      setInterval(() => {
+        let remainSeconds =
+          (INTERVAL * (1 - ((Date.now() / 1000 / INTERVAL) % 1)) + 1) | 0;
+        let p = ((INTERVAL - remainSeconds) / INTERVAL) * 100;
+        setProgress(p);
+      }, 1000);
     })().finally(() => {
       Toast.close();
     });
   }, []);
   useDidShow(() => {
     (async () => {
-      const localOTPs = await refreshOTPs();
-      setInterval(() => {
-        let remainSeconds =
-          (INTERVAL * (1 - ((Date.now() / 1000 / INTERVAL) % 1))) | 0;
-        if (remainSeconds == INTERVAL - 1) {
-          const newTokens = localOTPs.map((otp) => otp.generate());
-          setTokens(newTokens);
-        }
-        let p = ((INTERVAL - remainSeconds) / INTERVAL) * 100;
-        setProgress(p);
-      }, 1000);
+      await refreshOTPs();
     })();
   });
   return (
@@ -159,7 +153,10 @@ export default function Index() {
           })
       ).map((item, index) => (
         <View className="item" key={index}>
-          <SwipeCell onClick={() => copyToken(tokens[index])} catchMove={false}>
+          <SwipeCell
+            onClick={() => copyToken(item.generate())}
+            catchMove={false}
+          >
             <Flex
               align="center"
               justify="start"
@@ -179,7 +176,7 @@ export default function Index() {
                 </Flex>
               </Flex.Item>
               <Flex.Item className="code-item">
-                <Text className="code">{tokens[index]}</Text>
+                <Text className="code">{item.generate()}</Text>
                 <Progress
                   className="progress"
                   percent={progress}
