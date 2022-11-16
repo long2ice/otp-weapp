@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     NODE_ENV: '"production"',
-    API_URL: '"https://otp.long2ice.io"',
+    API_URL: '"https://otp.long2ice.com"',
     API_SECRET: '"holjl698709X"',
   },
   defineConstants: {},
