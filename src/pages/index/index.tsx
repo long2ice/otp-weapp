@@ -102,10 +102,7 @@ export default function Index() {
     <Layout
       title="两步验证码"
       navbar={
-        <Navbar.NavLeft
-          onClick={() => setActionSheet(true)}
-          icon={<Plus />}
-        ></Navbar.NavLeft>
+        <Navbar.NavLeft onClick={() => setActionSheet(true)} icon={<Plus />} />
       }
       refresherEnabled
       onRefresherRefresh={async () => {

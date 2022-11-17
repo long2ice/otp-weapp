@@ -8,6 +8,7 @@ import "./add.scss";
 import Layout from "../../../components/layout";
 import { addOTP } from "../../../storages/otp";
 import * as toast from "../../../components/toast";
+import * as api from "../../../apis/otp";
 
 export default function Add() {
   const [account, setAccount] = useState("");
@@ -17,6 +18,7 @@ export default function Add() {
     const uri = `otpauth://totp/${issuer}:${account}?secret=${secret}&issuer=${issuer}`;
     const totp = URI.parse(uri) as TOTP;
     await addOTP(totp);
+    await api.addOTPs([totp.toString()]);
     toast.success("添加成功");
     setTimeout(async () => {
       await navigateBack();
