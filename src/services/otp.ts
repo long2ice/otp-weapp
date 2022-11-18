@@ -1,4 +1,4 @@
-import * as api from "../apis/otp";
+import * as api from "../api/otp";
 import * as otpStorages from "../storages/otp";
 import * as userStorages from "../storages/user";
 import { isCloudAvailable } from "./cloud";

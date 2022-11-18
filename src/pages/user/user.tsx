@@ -1,4 +1,4 @@
-import { Flex, Image, Cell, Divider } from "@taroify/core";
+import { Flex, Image, Cell, Divider, Switch } from "@taroify/core";
 import { View } from "@tarojs/components";
 import { useEffect, useState } from "react";
 import {
@@ -11,26 +11,33 @@ import { navigateTo } from "@tarojs/taro";
 import "./user.scss";
 import * as user from "../../services/user";
 import Layout from "../../components/layout";
-import { getUser } from "../../storages/user";
+import { getUser, setUser } from "../../storages/user";
 import cloud from "../../assets/cloud.svg";
 import trash from "../../assets/trash-restore.svg";
 import phone from "../../assets/phone.svg";
 import Tips from "../../components/tips";
+import { updateUser } from "../../api/user";
 
 export default function User() {
   const [expiredDate, setExpiredDate] = useState<Date | null>();
+  const [isCloud, setIsCloud] = useState(false);
   const loadUser = async () => {
     const u = await getUser();
     if (u.expired_date != null) {
       setExpiredDate(new Date(u.expired_date));
     }
+    setIsCloud(u.is_cloud_enabled);
   };
   useEffect(() => {
     (async () => {
       await loadUser();
     })();
   }, []);
-
+  const onCloudChange = async (checked: boolean) => {
+    setIsCloud(checked);
+    let u = await updateUser(checked);
+    await setUser(u);
+  };
   return (
     <Layout
       title="个人中心"
@@ -57,6 +64,14 @@ export default function User() {
           </Tips>
         </Flex.Item>
       </Flex>
+      <Cell
+        title={isCloud ? "开启云同步" : "关闭云同步"}
+        rightIcon={
+          <Switch size="20px" checked={isCloud} onChange={onCloudChange} />
+        }
+        className="cloud-switch"
+        brief={isCloud ? "当前会自动同步到云端" : "当前不会同步到云端"}
+      />
       <View className="privilege">
         <View className="privilege-title">三大功能</View>
         <Divider />
@@ -100,10 +115,6 @@ export default function User() {
       <Cell
         icon={<DeleteOutlined />}
         title="回收站"
-        style={{
-          borderTopLeftRadius: "10px",
-          borderTopRightRadius: "10px",
-        }}
         rightIcon={<Arrow />}
         clickable
         onClick={async () => {
@@ -111,7 +122,7 @@ export default function User() {
             url: "/modules/pages/recycle/recycle",
           });
         }}
-      ></Cell>
+      />
       <Cell
         icon={<CommentOutlined />}
         onClick={async () => {

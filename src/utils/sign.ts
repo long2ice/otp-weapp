@@ -27,4 +27,4 @@ const getSign = (
   let s = kvs.sort().join("&") + `&key=${secret}`;
   return md5(s).toUpperCase();
 };
-export {getSign, getRandomStr};
+export { getSign, getRandomStr };

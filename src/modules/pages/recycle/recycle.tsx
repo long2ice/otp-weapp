@@ -14,7 +14,7 @@ import { TOTP, URI } from "otpauth";
 import { stopPullDownRefresh, usePullDownRefresh } from "@tarojs/taro";
 import Layout from "../../../components/layout";
 import "./recycle.scss";
-import { deleteOTPRecycle, getRecycle, restoreOTP } from "../../../apis/otp";
+import { deleteOTPRecycle, getRecycle, restoreOTP } from "../../../api/otp";
 import Tips from "../../../components/tips";
 import { isCloudAvailable } from "../../../services/cloud";
 import { API_URL } from "../../../constants";

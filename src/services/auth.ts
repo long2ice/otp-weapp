@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import { getToken, setToken } from "../storages/auth";
-import * as auth from "../apis/auth";
+import * as auth from "../api/auth";
 import { setUser } from "../storages/user";
 
 export async function login() {

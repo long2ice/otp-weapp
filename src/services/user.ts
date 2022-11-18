@@ -1,4 +1,4 @@
-import * as user from "../apis/user";
+import * as user from "../api/user";
 import { setUser } from "../storages/user";
 
 export async function getUser() {

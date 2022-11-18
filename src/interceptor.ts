@@ -1,4 +1,4 @@
-import { addInterceptor, checkSession } from "@tarojs/taro";
+import Taro, { addInterceptor, checkSession } from "@tarojs/taro";
 import { getToken, removeToken } from "./storages/auth";
 import * as auth from "./services/auth";
 import { getRandomStr, getSign } from "./utils/sign";
@@ -24,11 +24,14 @@ const interceptor = async function (chain) {
       case 200:
         return res;
       case 401:
-      case 403:
         await removeToken();
         await auth.login();
         return await chain.proceed(requestParams);
       default:
+        await Taro.showToast({
+          title: "服务器错误",
+          icon: "error",
+        });
         return Promise.reject(res.data);
     }
   });

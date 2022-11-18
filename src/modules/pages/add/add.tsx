@@ -8,7 +8,7 @@ import "./add.scss";
 import Layout from "../../../components/layout";
 import { addOTP } from "../../../storages/otp";
 import * as toast from "../../../components/toast";
-import * as api from "../../../apis/otp";
+import * as api from "../../../api/otp";
 
 export default function Add() {
   const [account, setAccount] = useState("");

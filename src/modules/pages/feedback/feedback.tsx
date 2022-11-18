@@ -3,7 +3,7 @@ import { Button, Form, Textarea } from "@taroify/core";
 import { useState } from "react";
 import { navigateBack } from "@tarojs/taro";
 import Layout from "../../../components/layout";
-import { AddFeedback } from "../../../apis/feedback";
+import { AddFeedback } from "../../../api/feedback";
 import * as toast from "../../../components/toast";
 export default function Feedback() {
   const [content, setContent] = useState("");

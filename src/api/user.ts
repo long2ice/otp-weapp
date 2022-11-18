@@ -10,3 +10,14 @@ export async function getUser() {
   });
   return data;
 }
+
+export async function updateUser(isCloudEnabled: boolean) {
+  let { data } = await request({
+    url: BASE_URL,
+    method: "PUT",
+    data: {
+      is_cloud_enabled: isCloudEnabled,
+    },
+  });
+  return data;
+}
