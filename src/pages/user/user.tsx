@@ -64,17 +64,7 @@ export default function User() {
           </Tips>
         </Flex.Item>
       </Flex>
-      <Cell
-        title={isCloud ? "开启云同步" : "关闭云同步"}
-        rightIcon={
-          <Switch size="20px" checked={isCloud} onChange={onCloudChange} />
-        }
-        className="cloud-switch"
-        brief={isCloud ? "当前会自动同步到云端" : "当前不会同步到云端"}
-      />
       <View className="privilege">
-        <View className="privilege-title">三大功能</View>
-        <Divider />
         <Flex
           className="privilege-content"
           align="center"
@@ -111,44 +101,58 @@ export default function User() {
             </Flex>
           </Flex.Item>
         </Flex>
+        <Divider />
+        <Cell
+          title={isCloud ? "开启云同步" : "关闭云同步"}
+          rightIcon={
+            <Switch size="20px" checked={isCloud} onChange={onCloudChange} />
+          }
+          brief={isCloud ? "当前会自动同步到云端" : "当前不会自动同步到云端"}
+        />
       </View>
-      <Cell
-        icon={<DeleteOutlined />}
-        title="回收站"
-        rightIcon={<Arrow />}
-        clickable
-        onClick={async () => {
-          await navigateTo({
-            url: "/modules/pages/recycle/recycle",
-          });
-        }}
-      />
-      <Cell
-        icon={<CommentOutlined />}
-        onClick={async () => {
-          await navigateTo({
-            url: "/modules/pages/feedback/feedback",
-          });
-        }}
-        rightIcon={<Arrow />}
-        title="反馈"
-        clickable
-      ></Cell>
-      <Cell
-        style={{
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
-        }}
-        icon={<InfoOutlined />}
-        onClick={async () => {
-          await navigateTo({
-            url: "/modules/pages/about/about",
-          });
-        }}
-        rightIcon={<Arrow />}
-        title="关于"
-        clickable
-      ></Cell>
+      <View className="settings">
+        <Cell
+          style={{
+            borderTopLeftRadius: "10rpx",
+            borderTopRightRadius: "10rpx",
+          }}
+          icon={<DeleteOutlined />}
+          title="回收站"
+          rightIcon={<Arrow />}
+          clickable
+          onClick={async () => {
+            await navigateTo({
+              url: "/modules/pages/recycle/recycle",
+            });
+          }}
+        />
+        <Cell
+          icon={<CommentOutlined />}
+          onClick={async () => {
+            await navigateTo({
+              url: "/modules/pages/feedback/feedback",
+            });
+          }}
+          rightIcon={<Arrow />}
+          title="反馈"
+          clickable
+        ></Cell>
+        <Cell
+          style={{
+            borderBottomLeftRadius: "10rpx",
+            borderBottomRightRadius: "10rpx",
+          }}
+          icon={<InfoOutlined />}
+          onClick={async () => {
+            await navigateTo({
+              url: "/modules/pages/about/about",
+            });
+          }}
+          rightIcon={<Arrow />}
+          title="关于"
+          clickable
+        ></Cell>
+      </View>
     </Layout>
   );
 }
