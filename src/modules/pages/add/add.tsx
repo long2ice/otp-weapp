@@ -50,7 +50,6 @@ export default function Add() {
             <Form.Control>
               <Input
                 value={account}
-                placeholder="请输入账户"
                 onChange={(e) => setAccount(e.detail.value)}
               />
             </Form.Control>
@@ -63,18 +62,13 @@ export default function Add() {
             <Form.Control>
               <Input
                 password
-                placeholder="请输入密钥"
                 value={secret}
                 onChange={(e) => setSecret(e.detail.value)}
               />
             </Form.Control>
           </Form.Item>
           <Field name="issuer" label={{ align: "left", children: "颁发者" }}>
-            <Input
-              placeholder="请输入颁发者"
-              value={issuer}
-              onChange={(e) => setIssuer(e.detail.value)}
-            />
+            <Input value={issuer} onChange={(e) => setIssuer(e.detail.value)} />
           </Field>
           <Field name="digits" label={{ align: "left", children: "长度" }}>
             <Input
