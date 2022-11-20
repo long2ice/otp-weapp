@@ -129,7 +129,13 @@ export default function Add() {
           </Popup>
         </Cell.Group>
         <View style={{ margin: "16px" }}>
-          <Button onClick={submit} shape="round" block color="primary">
+          <Button
+            formType="submit"
+            onClick={submit}
+            shape="round"
+            block
+            color="primary"
+          >
             提交
           </Button>
           <Button
