@@ -3,3 +3,4 @@ export const OTP = "otp";
 export const TOKEN = "token";
 export const USER = "user";
 export const EMAIL = "dev@long2ice.com";
+export const LOGO_URL = API_URL + "/static/images/logo.jpg";

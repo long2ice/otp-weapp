@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getAccountInfoSync, setClipboardData } from "@tarojs/taro";
 import Layout from "../../../components/layout";
 import "./about.scss";
-import { EMAIL } from "../../../constants";
+import { EMAIL, LOGO_URL } from "../../../constants";
 
 export default function About() {
   const [version, setVersion] = useState("");
@@ -18,7 +18,7 @@ export default function About() {
         <Flex.Item className="item title">OTP两步验证器</Flex.Item>
         <Flex.Item className="item">
           <Image
-            src="https://s1.ax1x.com/2022/11/15/zEJX1P.jpg"
+            src={LOGO_URL}
             style={{ width: "6rem", height: "6rem" }}
             round
           />
